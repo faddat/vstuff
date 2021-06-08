@@ -39,7 +39,9 @@ async function getTokenBalance(chain, address, token_id) {
     const result = await chain.getTokenBalance(address, token_id);
     console.log(result);
 }
-getTokenBalance(chain, "<address>", "<token_id>");
+
+
+getTokenBalance(chain, "AU3FUbJ1TVwBKKxTtx3nZTWs2Z6pb4Cy5Sy", "TWurgotttEasCE9Fc823EzP4hd5YbRVGapMeEBdxZ");
 
 deriveAddress(mnemonic, 0)
 
@@ -80,7 +82,9 @@ console.log(send_tx)
 sendPaymentTx(send_tx);
 
 
-
+for(;;){
+setTimeout(() => { getBalance(chain, "AU3FUbJ1TVwBKKxTtx3nZTWs2Z6pb4Cy5Sy"); }, 2000);
+}  
 
 
 
@@ -170,6 +174,3 @@ function destroyToken(acc, tokenId, tokenUnity, amount, attachment) {
 }
 
 
-for(;;){
-setTimeout(() => { getBalance(chain, "AU3FUbJ1TVwBKKxTtx3nZTWs2Z6pb4Cy5Sy"); }, 2000);
-}  
