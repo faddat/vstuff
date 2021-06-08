@@ -6,13 +6,13 @@
 
 
 const vsys = require("@virtualeconomy/js-v-sdk");
+const bs58 = require("bs58")
 const constants = vsys.constants;
 const node_address = "https://test.v.systems/api"; 
 const network_byte = constants.TESTNET_BYTE;
 var acc = new vsys.Account(constants.TESTNET_BYTE);
 var chain = new vsys.Blockchain(node_address, network_byte);
-
-
+var tra = new vsys.Transaction(network_byte);
 
 var mnemonic = "boy inner imitate addict patient behave spirit issue give image hard version lady blush phone"
 
@@ -42,6 +42,44 @@ async function getTokenBalance(chain, address, token_id) {
 getTokenBalance(chain, "<address>", "<token_id>");
 
 deriveAddress(mnemonic, 0)
+
+
+
+// 1623184567869000000
+// 6942069420694206942
+
+
+let timestamp = 6942069420694206942;
+console.log(timestamp)
+
+
+async function sendPaymentTx(tx) {
+    // const result = await chain.sendPaymentTx(tx);
+    const result = await acc.sendTransaction(chain, tx);
+    console.log(result);
+}
+
+// Create Transaction Object
+let public_key = acc.getPublicKey();
+tra.buildPaymentTx(public_key, "AU3FUbJ1TVwBKKxTtx3nZTWs2Z6pb4Cy5Sy", "1000000", bs58.encode(Buffer.from("hi")))
+
+// Get bytes
+let bytes = tra.toBytes();
+
+// Get signature
+let signature = acc.getSignature(bytes);
+
+
+
+// Get json for sending tx
+let send_tx = tra.toJsonForSendingTx(signature);
+
+console.log(send_tx)
+
+// Send transaction
+sendPaymentTx(send_tx);
+
+
 
 
 
@@ -133,5 +171,5 @@ function destroyToken(acc, tokenId, tokenUnity, amount, attachment) {
 
 
 for(;;){
-setTimeout(() => { getBalance(chain, "<address>"); }, 2000);
+setTimeout(() => { getBalance(chain, "AU3FUbJ1TVwBKKxTtx3nZTWs2Z6pb4Cy5Sy"); }, 2000);
 }  
