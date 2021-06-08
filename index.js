@@ -7,6 +7,8 @@
 
 const vsys = require("@virtualeconomy/js-v-sdk");
 const constants = vsys.constants;
+const node_address = "https://test.v.systems/api"; 
+const network_byte = constants.TESTNET_BYTE;
 var acc = new vsys.Account(constants.TESTNET_BYTE);
 var chain = new vsys.Blockchain(node_address, network_byte);
 
@@ -14,8 +16,10 @@ var chain = new vsys.Blockchain(node_address, network_byte);
 
 var mnemonic = "boy inner imitate addict patient behave spirit issue give image hard version lady blush phone"
 
+
+
 // derive address from mnemonic
-function deriveAddress(increment=0) {
+function deriveAddress(mnemonic, increment=0) {
     acc.buildFromSeed(mnemonic, increment);
     console.log(acc.getAddress());
 }
@@ -37,15 +41,21 @@ async function getTokenBalance(chain, address, token_id) {
 }
 getTokenBalance(chain, "<address>", "<token_id>");
 
-while(true){
-  getBalance(chain, "<address>");
-  await new Promise(r => setTimeout(r, 2000));
-}
+deriveAddress(mnemonic, 0)
+
+
+
+
+
 
 
 // ** This function sends tokens to some destination address, on demand **
 // attachment set to nil,it  is the third parameter after amount
-function sendToken(acc, tokenId, tokenUnity, destinationAddress, amount, " ") {
+
+attachment = " "
+
+
+function sendToken(acc, tokenId, tokenUnity, destinationAddress, amount, attachment){
   let data_generator = new vsys.TokenContractDataGenerator();
   let public_key = acc.getPublicKey();
   let timestamp = Date.now() * 1e6;
@@ -71,7 +81,7 @@ function sendToken(acc, tokenId, tokenUnity, destinationAddress, amount, " ") {
 
 // ** This function issues new tokens in the contract, on demand **
 // attachment set to nil,it  is the third parameter after amount
-function issueToken(acc, tokenId, tokenUnity, amount, " ") {
+function issueToken(acc, tokenId, tokenUnity, amount, attachment) {
   let data_generator = new vsys.TokenContractDataGenerator();
   let public_key = acc.getPublicKey();
   let timestamp = Date.now() * 1e6;
@@ -97,7 +107,7 @@ function issueToken(acc, tokenId, tokenUnity, amount, " ") {
 
 // ** This function destoyes tokens in the contract, on demand **
 // attachment set to nil,it  is the third parameter after amount
-function destroyToken(acc, tokenId, tokenUnity, amount, " ") {
+function destroyToken(acc, tokenId, tokenUnity, amount, attachment) {
   let data_generator = new vsys.TokenContractDataGenerator();
   let public_key = acc.getPublicKey();
   let timestamp = Date.now() * 1e6;
@@ -120,3 +130,8 @@ function destroyToken(acc, tokenId, tokenUnity, amount, " ") {
   sendExecuteContractTx(send_tx);
 
 }
+
+
+for(;;){
+setTimeout(() => { getBalance(chain, "<address>"); }, 2000);
+}  
