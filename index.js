@@ -143,5 +143,7 @@ function destroyToken(account, tokenId, tokenUnity, amount, attachment) {
 }
 
 
-var contractId = vsys.default.Converters.
+// get a Contract ID from the token ID
+let contractId = vsys.default.Convert.tokenIDToContractID(tokenId)
+// burn baby, burn
 console.log(destroyToken(account, contractId, 1000000, 1))
