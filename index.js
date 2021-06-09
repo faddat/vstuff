@@ -15,8 +15,8 @@ var chain = new vsys.Blockchain(node_address, network_byte);
 var tra = new vsys.Transaction(network_byte);
 
 var mnemonic = "boy inner imitate addict patient behave spirit issue give image hard version lady blush phone"
-acc.buildFromSeed(mnemonic, 0);
-address = acc.getAddress(); // will guive us: AU3FUbJ1TVwBKKxTtx3nZTWs2Z6pb4Cy5Sy at HD position 0
+var account = acc.buildFromSeed(mnemonic, 0);
+var address = acc.getAddress(); // will guive us: AU3FUbJ1TVwBKKxTtx3nZTWs2Z6pb4Cy5Sy at HD position 0
 
 
 console.log("Address: ", address); 
@@ -35,13 +35,10 @@ async function getBalance(chain, address) {
     console.log(result);
 }
 
-
-
 async function sendExecuteContractTx(tx) {
     const result = await chain.sendExecuteContractTx(tx);
     console.log(result);
 }
-
 
 // send VSYS
 async function sendPaymentTx(tx) {
@@ -59,55 +56,23 @@ async function getTokenBalance(chain, address, token_id) {
 // actually get the token balance
 getTokenBalance(chain, address, tokenId);
 
-
-// Create Transaction Object
-let public_key = acc.getPublicKey();
-tra.buildPaymentTx(public_key, "AU3FUbJ1TVwBKKxTtx3nZTWs2Z6pb4Cy5Sy", ".1", bs58.encode(Buffer.from("hi")))
-
-// Get bytes
-let bytes = tra.toBytes();
-
-// Get signature
-let signature = acc.getSignature(bytes);
-
-
-
-// Get json for sending tx
-let send_tx = tra.toJsonForSendingTx(signature);
-
-console.log(send_tx)
-
-// Send transaction
-sendPaymentTx(send_tx);
-
-
 // for(;;){
 // setTimeout(() => { getBalance(chain, "AU3FUbJ1TVwBKKxTtx3nZTWs2Z6pb4Cy5Sy"); }, 2000);
 // }  
 
 
-
-
-
-
-// ** This function sends tokens to some destination address, on demand **
-// attachment set to nil,it  is the third parameter after amount
-
-attachment = " "
-
-
 function sendToken(acc, tokenId, tokenUnity, destinationAddress, amount, attachment){
   let data_generator = new vsys.TokenContractDataGenerator();
-  let public_key = acc.getPublicKey();
+  //let public_key = acc.;
   let timestamp = Date.now() * 1e6;
   let function_data = data_generator.createSendData(destinationAddress, amount, tokenUnity);
   let function_index = vsys.getContractFunctionIndex(vsys.ContractType.TOKEN, 'SEND');
 
   // Build contract tx
-  tra.buildExecuteContractTx(public_key, "<contract_id>", function_index, function_data, timestamp, attachment);
+  let transaction = tra.buildExecuteContractTx(public_key, tokenId, function_index, function_data, timestamp, attachment);
 
   // Get bytes
-  let bytes = tra.toBytes();
+  let bytes = tra.toBytes(transaction);
 
   // Get signature
   let signature = acc.getSignature(bytes);
@@ -116,21 +81,26 @@ function sendToken(acc, tokenId, tokenUnity, destinationAddress, amount, attachm
   let send_tx = tra.toJsonForSendingTx(signature);
 
   // Send transaction
-  sendExecuteContractTx(send_tx);
+  let final = tra.sendExecuteContractTx(send_tx);
+
+  console.log(final)
 
 }
 
+//let tokensend = sendToken("AU3FUbJ1TVwBKKxTtx3nZTWs2Z6pb4Cy5Sy", "7A8XSk34hZ5hm8mq6GfynMgxKX8AVK2uAkksV4xcFKxx", "1000000", "100",  bs58.encode(Buffer.from("hi")))  
+
+
 // ** This function issues new tokens in the contract, on demand **
 // attachment set to nil,it  is the third parameter after amount
-function issueToken(acc, tokenId, tokenUnity, amount, attachment) {
+function issueToken(account, tokenId, tokenUnity, amount, attachment) {
   let data_generator = new vsys.TokenContractDataGenerator();
   let public_key = acc.getPublicKey();
   let timestamp = Date.now() * 1e6;
-  let function_data = data_generator.createSendData(destinationAddress, amount, tokenUnity);
+  let function_data = data_generator.createIssueData(amount, tokenUnity);
   let function_index = vsys.getContractFunctionIndex(vsys.ContractType.TOKEN, 'ISSUE');
 
   // Build contract tx
-  tra.buildExecuteContractTx(public_key, "<contract_id>", function_index, function_data, timestamp, attachment);
+  tra.buildExecuteContractTx(public_key, tokenId, function_index, function_data, timestamp, attachment);
 
   // Get bytes
   let bytes = tra.toBytes();
@@ -148,15 +118,15 @@ function issueToken(acc, tokenId, tokenUnity, amount, attachment) {
 
 // ** This function destoyes tokens in the contract, on demand **
 // attachment set to nil,it  is the third parameter after amount
-function destroyToken(acc, tokenId, tokenUnity, amount, attachment) {
+function destroyToken(account, tokenId, tokenUnity, amount, attachment) {
   let data_generator = new vsys.TokenContractDataGenerator();
   let public_key = acc.getPublicKey();
   let timestamp = Date.now() * 1e6;
-  let function_data = data_generator.createSendData(destinationAddress, amount, tokenUnity);
+  let function_data = data_generator.createDestroyData(amount, tokenUnity);
   let function_index = vsys.getContractFunctionIndex(vsys.ContractType.TOKEN, 'DESTROY');
 
   // Build contract tx
-  tra.buildExecuteContractTx(public_key, "<contract_id>", function_index, function_data, timestamp, attachment);
+   let transaction = tra.buildExecuteContractTx(public_key, tokenId, function_index, function_data, timestamp, attachment);
 
   // Get bytes
   let bytes = tra.toBytes();
@@ -173,3 +143,5 @@ function destroyToken(acc, tokenId, tokenUnity, amount, attachment) {
 }
 
 
+var contractId = vsys.default.Converters.
+console.log(destroyToken(account, contractId, 1000000, 1))
