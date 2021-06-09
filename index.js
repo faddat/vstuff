@@ -15,8 +15,13 @@ var chain = new vsys.Blockchain(node_address, network_byte);
 var tra = new vsys.Transaction(network_byte);
 
 var mnemonic = "boy inner imitate addict patient behave spirit issue give image hard version lady blush phone"
+acc.buildFromSeed(mnemonic, 0);
+address = acc.getAddress(); // will guive us: AU3FUbJ1TVwBKKxTtx3nZTWs2Z6pb4Cy5Sy at HD position 0
 
 
+console.log("Address: ", address); 
+
+var tokenId = "TWtbDuZE8cLMnGLqXp7jShkYdkJsEKV8L2cegxLHg"; // vUSDT
 
 // derive address from mnemonic
 function deriveAddress(mnemonic, increment=0) {
@@ -24,46 +29,40 @@ function deriveAddress(mnemonic, increment=0) {
     console.log(acc.getAddress());
 }
 
+// get VSYS balance
 async function getBalance(chain, address) {
     let result = await chain.getBalance(address);
     console.log(result);
 }
+
+
 
 async function sendExecuteContractTx(tx) {
     const result = await chain.sendExecuteContractTx(tx);
     console.log(result);
 }
 
-// Get address's token balance
-async function getTokenBalance(chain, address, token_id) {
-    const result = await chain.getTokenBalance(address, token_id);
-    console.log(result);
-}
 
-
-getTokenBalance(chain, "AU3FUbJ1TVwBKKxTtx3nZTWs2Z6pb4Cy5Sy", "TWurgotttEasCE9Fc823EzP4hd5YbRVGapMeEBdxZ");
-
-deriveAddress(mnemonic, 0)
-
-
-
-// 1623184567869000000
-// 6942069420694206942
-
-
-let timestamp = 6942069420694206942;
-console.log(timestamp)
-
-
+// send VSYS
 async function sendPaymentTx(tx) {
     // const result = await chain.sendPaymentTx(tx);
     const result = await acc.sendTransaction(chain, tx);
-    console.log(result);
+    console.log("Payment sent:  ", result);
 }
+
+// Get address's token balance
+async function getTokenBalance(chain, address, token_id) {
+    const result = await chain.getTokenBalance(address, token_id);
+    console.log("VUSDT BALANCE:  ", result);
+}
+
+// actually get the token balance
+getTokenBalance(chain, address, tokenId);
+
 
 // Create Transaction Object
 let public_key = acc.getPublicKey();
-tra.buildPaymentTx(public_key, "AU3FUbJ1TVwBKKxTtx3nZTWs2Z6pb4Cy5Sy", "1000000", bs58.encode(Buffer.from("hi")))
+tra.buildPaymentTx(public_key, "AU3FUbJ1TVwBKKxTtx3nZTWs2Z6pb4Cy5Sy", ".1", bs58.encode(Buffer.from("hi")))
 
 // Get bytes
 let bytes = tra.toBytes();
@@ -82,9 +81,9 @@ console.log(send_tx)
 sendPaymentTx(send_tx);
 
 
-for(;;){
-setTimeout(() => { getBalance(chain, "AU3FUbJ1TVwBKKxTtx3nZTWs2Z6pb4Cy5Sy"); }, 2000);
-}  
+// for(;;){
+// setTimeout(() => { getBalance(chain, "AU3FUbJ1TVwBKKxTtx3nZTWs2Z6pb4Cy5Sy"); }, 2000);
+// }  
 
 
 
